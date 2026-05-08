@@ -7329,18 +7329,22 @@ window.addEventListener('appinstalled', () => {
 
 // ESV Key
 function saveEsvKey() {
-  const key = document.getElementById('esv-key-input').value.trim();
+  const input = document.getElementById('esv-key-input');
+  const key = input ? input.value.trim() : '';
   if (!key) return;
-  localStorage.setItem('millstream:esv-key', key);
   esvApiKey = key;
-  document.getElementById('esv-setup').classList.remove('visible');
-  alert('ESV key saved. Select ESV mode to use it.');
+  localStorage.setItem('millstream:esv-key', key);
+  checkEsvSetup();
+  const selected = document.querySelector('.day.selected');
+  if (selected) selectDay(selected);
 }
 function checkEsvSetup() {
-  if (mode === 'ESV' && !esvApiKey) {
-    document.getElementById('esv-setup').classList.add('visible');
+  const box = document.getElementById('esv-setup');
+  if (!box) return;
+  if (!esvApiKey) {
+    box.classList.add('visible');
   } else {
-    document.getElementById('esv-setup').classList.remove('visible');
+    box.classList.remove('visible');
   }
 }
 
