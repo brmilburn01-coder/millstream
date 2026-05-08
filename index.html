@@ -333,6 +333,16 @@ footer .footer-name { font-weight:900; font-style:normal; color:var(--gold); fon
 
   
 
+  <div class="esv-setup" id="esv-setup">
+    <h3>🔑 Enter Your ESV API Key</h3>
+    <p>Get a free key at <a href="https://api.esv.org" target="_blank">api.esv.org</a> — sign in, create an application, and paste your token below. Only needs to be done once.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      <input type="text" id="esv-key-input" placeholder="Paste your ESV API token here…"
+        style="flex:1;min-width:200px;padding:10px 14px;border:1px solid var(--gold);border-radius:10px;font-family:inherit;font-size:.95rem;">
+      <button onclick="saveEsvKey()" style="padding:10px 20px;background:var(--rust);color:var(--parchment);border:0;border-radius:10px;font-weight:800;cursor:pointer;font-family:inherit;">Save Key</button>
+    </div>
+  </div>
+
   <nav class="controls" aria-label="Reading controls">
     <div class="control-group">
       <span class="label">Mode</span>
@@ -7501,12 +7511,10 @@ async function updateProgress() {
 }
 
 function selectMode(next) {
-  mode = next;
-  localStorage.setItem('millstream:mode', mode);
-  ['kjv','esv','csb'].forEach(m => {
-    document.getElementById('mode-' + m).classList.toggle('active', mode === m.toUpperCase());
-  });
-  checkEsvSetup();
+  mode = 'ESV';
+  localStorage.setItem('millstream:mode', 'ESV');
+  const esvBtn = document.getElementById('mode-esv');
+  if (esvBtn) esvBtn.classList.add('active');
   const selected = document.querySelector('.day.selected');
   if (selected) selectDay(selected);
 }
@@ -7699,12 +7707,12 @@ document.getElementById('today-btn').addEventListener('click', () => {
 
 // Init
 document.addEventListener('DOMContentLoaded', async () => {
-  // Set mode buttons
-  ['kjv','esv','csb'].forEach(m => {
-    const btn = document.getElementById('mode-' + m);
-    btn.classList.toggle('active', mode === m.toUpperCase());
-    btn.addEventListener('click', () => selectMode(m.toUpperCase()));
-  });
+  // Set mode button (ESV only)
+  const esvBtn = document.getElementById('mode-esv');
+  if (esvBtn) {
+    esvBtn.classList.add('active');
+    esvBtn.addEventListener('click', () => selectMode('ESV'));
+  }
 
   // Overview toggles - open by default, click to close/reopen
   document.querySelectorAll('.week-overview').forEach(section => {
@@ -7766,6 +7774,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // ESV key input pre-fill
   if (esvApiKey) document.getElementById('esv-key-input').value = esvApiKey;
+  checkEsvSetup();
 });
 </script>
 
